@@ -40,6 +40,14 @@ pipeline{
             steps{
                     echo "Deploy the application to ${env.PRODUCTION_ENVIRONMENT}"
                   }
+            post {
+                always {
+                    emailext(
+                        subject: "Deployment Status: ${currentBuild.result}",
+                        body: "The deployment to production has completed. Build status: ${currentBuild.result}.",
+                        to: 'derbyt.uni@gmail.com',
+                    )
+                }
             }
         }
     }
