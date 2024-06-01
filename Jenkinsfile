@@ -23,11 +23,11 @@ pipeline{
                     try {
                         echo "Run unit tests to ensure the code functions as expected."
                         echo "Run integration tests to ensure different components of the application work together as expected."
-                        bat 'echo "The unit and integration tests have completed. Build status: ${currentBuild.result}." > test-logs.txt' // Replace with actual test command
+                        bat 'echo "The unit and integration tests have been successfully completed." > test-logs.txt' // Replace with actual test command
                         currentBuild.result = 'SUCCESS'
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
-                        bat 'echo "Test failed logs" > test-logs.txt' // Replace with actual failure log
+                        bat 'echo "The unit and integration tests have failed." > test-logs.txt' // Replace with actual failure log
                         throw e
                     }
                 }
@@ -35,9 +35,19 @@ pipeline{
             post {
                 always {
                     archiveArtifacts artifacts: 'test-logs.txt', allowEmptyArchive: true
+                }
+                success {
                     emailext(
-                        subject: "Test Status: ${currentBuild.result}",
-                        body: "The unit and integration tests have completed. Build status: ${currentBuild.currentResult}.",
+                        subject: "Test Status: SUCCESS",
+                        body: "The unit and integration tests have completed successfully. Build status: ${currentBuild.currentResult}.",
+                        to: 'derbyt.uni@gmail.com',
+                        attachmentsPattern: 'test-logs.txt'
+                    )
+                }
+                failure {
+                    emailext(
+                        subject: "Test Status: FAILURE",
+                        body: "The unit and integration tests have failed. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
                         attachmentsPattern: 'test-logs.txt'
                     )
@@ -53,13 +63,14 @@ pipeline{
             steps{
                     echo "Perform a security scan on the code using __________ to identify any vulnerabilities."
                   }
-            
             post {
                 always {
+                    archiveArtifacts artifacts: 'test-logs.txt', allowEmptyArchive: true
                     emailext(
                         subject: "Security Scan Status: ${currentBuild.result}",
-                        body: "The security scan has completed. Build status: ${currentBuild.result}.",
+                        body: "The security scan has completed. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
+                        attachmentsPattern: 'test-logs.txt'
                     )
                 }
             }
