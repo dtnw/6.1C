@@ -2,8 +2,6 @@ pipeline{
     agent any
     environment {
         DIRECTORY_PATH = "C:/Users/derby/Documents/Deakin 2024/Code"
-        TESTING_ENVIRONMENT = "Testing environment: SIT753"
-        PRODUCTION_ENVIRONMENT = "Derby"
     }
      triggers {
         pollSCM('H/5 * * * *') // Poll every 5 minutes
@@ -143,7 +141,6 @@ pipeline{
             steps{
                     echo "Deploy the application to a production server on AWS EC2 instance."
                   }
-            
         }
     }
 }
