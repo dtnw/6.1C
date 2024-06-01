@@ -6,6 +6,11 @@ pipeline{
         PRODUCTION_ENVIRONMENT = "Derby"
     }
     stages{
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-username/your-repository.git'
+            }
+        }
         stage('Build'){
             steps{
                 echo "Fetch the source code from ${env.DIRECTORY_PATH}."
