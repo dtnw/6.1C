@@ -5,6 +5,9 @@ pipeline{
         TESTING_ENVIRONMENT = "Testing environment: SIT753"
         PRODUCTION_ENVIRONMENT = "Derby"
     }
+     triggers {
+        pollSCM('H/5 * * * *') // Poll every 5 minutes
+    }
     stages{
         stage('Checkout') {
             steps {
@@ -23,25 +26,25 @@ pipeline{
                     try {
                         echo "Run unit tests to ensure the code functions as expected."
                         echo "Run integration tests to ensure different components of the application work together as expected."
-                        bat 'echo "The unit and integration tests have been successfully completed." > test-logs.txt' // Replace with actual test command
+                        bat 'echo "The unit and integration tests have been successfully completed." > logs.txt' // Success logs
                         currentBuild.result = 'SUCCESS'
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
-                        bat 'echo "The unit and integration tests have failed." > test-logs.txt' // Replace with actual failure log
+                        bat 'echo "The unit and integration tests have failed." > logs.txt' // Fail logs
                         throw e
                     }
                 }
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'test-logs.txt', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'logs.txt', allowEmptyArchive: true
                 }
                 success {
                     emailext(
                         subject: "Test Status: SUCCESS",
                         body: "The unit and integration tests have completed successfully. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
-                        attachmentsPattern: 'test-logs.txt'
+                        attachmentsPattern: 'logs.txt'
                     )
                 }
                 failure {
@@ -49,7 +52,7 @@ pipeline{
                         subject: "Test Status: FAILURE",
                         body: "The unit and integration tests have failed. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
-                        attachmentsPattern: 'test-logs.txt'
+                        attachmentsPattern: 'logs.txt'
                     )
                 }
             }
@@ -60,17 +63,37 @@ pipeline{
                   }
             }
         stage('Security Scan'){
-            steps{
-                    echo "Perform a security scan on the code using __________ to identify any vulnerabilities."
-                  }
+            steps {
+                script {
+                    try {
+                        echo  "Perform a security scan on the code using __________ to identify any vulnerabilities."
+                        bat 'echo "The security scans have been successfully completed." > logs.txt' // Success logs
+                        currentBuild.result = 'SUCCESS'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        bat 'echo "The security scans have failed." > logs.txt' // Fail logs
+                        throw e
+                    }
+                }
+            }
             post {
                 always {
-                    archiveArtifacts artifacts: 'test-logs.txt', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'logs.txt', allowEmptyArchive: true
+                }
+                success {
                     emailext(
-                        subject: "Security Scan Status: ${currentBuild.result}",
-                        body: "The security scan has completed. Build status: ${currentBuild.currentResult}.",
+                        subject: "Test Status: SUCCESS",
+                        body: "The security scans have been successfully completed. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
-                        attachmentsPattern: 'test-logs.txt'
+                        attachmentsPattern: 'logs.txt'
+                    )
+                }
+                failure {
+                    emailext(
+                        subject: "Test Status: FAILURE",
+                        body: "The security scans have failed. Build status: ${currentBuild.currentResult}.",
+                        to: 'derbyt.uni@gmail.com',
+                        attachmentsPattern: 'logs.txt'
                     )
                 }
             }
