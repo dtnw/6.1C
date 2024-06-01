@@ -8,7 +8,7 @@ pipeline{
     stages{
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/dtnw/6.1C.git'
+                git branch: 'main', url: 'https://github.com/dtnw/6.1C/6.1C.git'
             }
         }
         stage('Build'){
