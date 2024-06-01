@@ -4,7 +4,7 @@ pipeline{
         DIRECTORY_PATH = "C:/Users/derby/Documents/Deakin 2024/Code"
     }
      triggers {
-        pollSCM('H/5 * * * *') // Poll every 5 minutes
+        pollSCM('H/3 * * * *') // Poll every 3 minutes
     }
     stages{
         stage('Checkout') {
@@ -80,7 +80,7 @@ pipeline{
                 }
                 success {
                     emailext(
-                        subject: "Test Status: SUCCESS",
+                        subject: "Scan Status: SUCCESS",
                         body: "The security scans have been successfully completed. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
                         attachmentsPattern: 'logs.txt'
@@ -88,7 +88,7 @@ pipeline{
                 }
                 failure {
                     emailext(
-                        subject: "Test Status: FAILURE",
+                        subject: "Scan Status: FAILURE",
                         body: "The security scans have failed. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
                         attachmentsPattern: 'logs.txt'
