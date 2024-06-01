@@ -10,7 +10,8 @@ pipeline{
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/dtnw/6.1C.git'
-            }
+                echo "trial 1."
+            
         }
         stage('Build'){
             steps{
