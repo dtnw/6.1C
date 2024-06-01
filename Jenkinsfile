@@ -9,7 +9,6 @@ pipeline{
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/dtnw/6.1C.git'
-                echo 'test'
             }
         }
         stage('Build'){
@@ -19,17 +18,28 @@ pipeline{
             }
         }
         stage('Test'){
-            steps{
-                echo "Run unit tests to ensure the code functions as expected."
-                echo "Run integration tests to ensure different components of the application work together as expected."
+            steps {
+                script {
+                    try {
+                        echo "Run unit tests to ensure the code functions as expected."
+                        echo "Run integration tests to ensure different components of the application work together as expected."
+                        bat 'echo "Test logs" > test-logs.txt' // Replace with actual test command
+                        currentBuild.result = 'SUCCESS'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        bat 'echo "Test failed logs" > test-logs.txt' // Replace with actual failure log
+                        throw e
+                    }
+                }
             }
-        
-        post {
+            post {
                 always {
+                    archiveArtifacts artifacts: 'test-logs.txt', allowEmptyArchive: true
                     emailext(
                         subject: "Test Status: ${currentBuild.result}",
-                        body: "The unit and integration tests has completed. Build status: ${currentBuild.result}.",
+                        body: "The unit and integration tests have completed. Build status: ${currentBuild.currentResult}.",
                         to: 'derbyt.uni@gmail.com',
+                        attachmentsPattern: 'test-logs.txt'
                     )
                 }
             }
