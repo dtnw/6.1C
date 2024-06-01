@@ -23,7 +23,7 @@ pipeline{
                 echo "Run unit tests to ensure the code functions as expected."
                 echo "Run integration tests to ensure different components of the application work together as expected."
             }
-        }
+        
         post {
                 always {
                     emailext(
@@ -33,6 +33,7 @@ pipeline{
                     )
                 }
             }
+        }
         stage('Code Analysis'){
             steps{
                     echo "Integrate _________ to analyse the code and ensure it meets industry standards."
@@ -42,7 +43,7 @@ pipeline{
             steps{
                     echo "Perform a security scan on the code using __________ to identify any vulnerabilities."
                   }
-            }
+            
             post {
                 always {
                     emailext(
@@ -52,6 +53,7 @@ pipeline{
                     )
                 }
             }
+        }
         stage('Deplay to Staging'){
             steps{
                 echo "Deploy the application to a staging server (AWS EC2 instance etc)."
