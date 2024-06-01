@@ -23,7 +23,8 @@ pipeline{
                     try {
                         echo "Run unit tests to ensure the code functions as expected."
                         echo "Run integration tests to ensure different components of the application work together as expected."
-                        bat 'echo "Test logs" > test-logs.txt' // Replace with actual test command
+                        bat 'echo "The unit and integration tests have completed.
+                        Build status: ${currentBuild.result}." > test-logs.txt' // Replace with actual test command
                         currentBuild.result = 'SUCCESS'
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
