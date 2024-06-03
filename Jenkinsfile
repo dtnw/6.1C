@@ -3,9 +3,6 @@ pipeline{
     environment {
         DIRECTORY_PATH = "C:/Users/derby/Documents/Deakin 2024/Code"
     }
-     triggers {
-        pollSCM('H/3 * * * *') // Poll every 3 minutes
-    }
     stages{
         stage('Checkout') {
             steps {
